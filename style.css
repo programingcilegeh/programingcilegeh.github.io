@@ -97,6 +97,9 @@ label #close{
     box-shadow: 0px 0px 10px#000000;
     border-radius: 1%;
     padding: 0px;
+    display:block;
+    height:90px;
+    line-height:90px;
 }
 .ig:hover{
     color: rgb(255, 174, 0);
@@ -109,6 +112,9 @@ label #close{
     box-shadow: 0px 0px 10px#000000;
     border-radius: 1%;
     padding: 0px;
+    display:block;
+    height:90px;
+    line-height:90px;
 }
 .fb:hover{
     color: #6b74fc;
@@ -192,7 +198,7 @@ a .btn:hover{
         padding-right: 50px;
     }
     .col{
-        margin: 20px 100px;
+        margin: 20px 50px;
         padding:10px;
     }
     label #btn,
