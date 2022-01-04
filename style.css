@@ -182,6 +182,14 @@ a .btn:hover{
     label #btn{
         display: block;
     }
+    nav{
+        height: 120px; 
+        line-height: 120px
+    }
+    label #btn,
+    label #close{
+        line-height:120px;
+    }
     ul{
         position: fixed;
         width: 50%;
