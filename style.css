@@ -118,7 +118,7 @@ label #close{
     margin: 0px 50px;
     box-shadow: 0px 0px 15px#000000;
     text-align: center;
-    padding: 10px;
+    padding: 30px;
     transition: .4s;
     color: #000000;
 }
@@ -183,28 +183,36 @@ a .btn:hover{
         display: block;
     }
     nav{
-        height: 120px; 
-        line-height: 120px
+        height: 150px; 
+        line-height: 150px
+    }
+    #home{
+        padding-top:220px;
+        padding-left: 50px;
+        padding-right: 50px;
+    }
+    .col{
+        margin: 20px 100px;
+        padding:10px;
     }
     label #btn,
     label #close{
-        line-height:120px;
+        line-height:150px;
     }
     ul{
         position: fixed;
         width: 50%;
-        height: 6,5vh;
+        height: 7,5vh;
         margin: 10px;
         padding: 10px;
         right: -100%;
-        top: 82px;
+        top: 152px;
         background-color: rgb(23, 122, 252);
         box-shadow: -5px 5px 8px rgba(0,0,0,0.8);
         text-align: center;
         border-radius: 2%;
         transition: .4s;
         border: 1px solid #0011ff;
-
     }
     ul li{
         display: block;
