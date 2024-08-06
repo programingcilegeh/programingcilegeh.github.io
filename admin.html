@@ -139,14 +139,12 @@
     </footer>
 
     <script>
-        // Fungsi untuk mendapatkan berita dari file JSON
         async function getNewsData() {
             const response = await fetch('newsData.json');
             const data = await response.json();
             return data;
         }
 
-        // Fungsi untuk menyimpan berita ke file JSON
         async function saveNewsData(newsData) {
             const response = await fetch('newsData.json', {
                 method: 'PUT',
@@ -207,16 +205,14 @@
             const content = document.getElementById('newsContent').value;
             const image = document.getElementById('newsImage').value;
             const newsId = document.getElementById('newsId').value;
-            const url = "#"; // Placeholder URL, bisa diubah sesuai kebutuhan
+            const url = "#"; 
 
             if (title && content && image) {
                 const newsData = await getNewsData();
 
                 if (newsId) {
-                    // Edit berita yang ada
                     newsData[newsId] = { title, content, image, url };
                 } else {
-                    // Tambah berita baru
                     newsData.push({ title, content, image, url });
                 }
 
@@ -250,7 +246,6 @@
             displayNews();
         }
 
-        // Display news on page load
         window.onload = displayNews;
     </script>
 </body>
