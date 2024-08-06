@@ -139,23 +139,30 @@
     </footer>
 
     <script>
-        // JavaScript
-
-        // Fungsi untuk mendapatkan berita dari LocalStorage
-        function getNewsData() {
-            return JSON.parse(localStorage.getItem('newsData')) || [];
+        // Fungsi untuk mendapatkan berita dari file JSON
+        async function getNewsData() {
+            const response = await fetch('newsData.json');
+            const data = await response.json();
+            return data;
         }
 
-        // Fungsi untuk menyimpan berita ke LocalStorage
-        function saveNewsData(newsData) {
-            localStorage.setItem('newsData', JSON.stringify(newsData));
+        // Fungsi untuk menyimpan berita ke file JSON
+        async function saveNewsData(newsData) {
+            const response = await fetch('newsData.json', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newsData)
+            });
+            return response.json();
         }
 
-        function displayNews() {
+        async function displayNews() {
             const newsContainer = document.getElementById('newsContainer');
             newsContainer.innerHTML = '';
 
-            const newsData = getNewsData();
+            const newsData = await getNewsData();
             newsData.forEach((news, index) => {
                 const newsArticle = document.createElement('div');
                 newsArticle.classList.add('news-article');
@@ -195,7 +202,7 @@
             });
         }
 
-        function addOrEditNews() {
+        async function addOrEditNews() {
             const title = document.getElementById('newsTitle').value;
             const content = document.getElementById('newsContent').value;
             const image = document.getElementById('newsImage').value;
@@ -203,7 +210,7 @@
             const url = "#"; // Placeholder URL, bisa diubah sesuai kebutuhan
 
             if (title && content && image) {
-                const newsData = getNewsData();
+                const newsData = await getNewsData();
 
                 if (newsId) {
                     // Edit berita yang ada
@@ -213,7 +220,7 @@
                     newsData.push({ title, content, image, url });
                 }
 
-                saveNewsData(newsData);
+                await saveNewsData(newsData);
                 displayNews();
 
                 document.getElementById('newsTitle').value = '';
@@ -226,19 +233,20 @@
         }
 
         function editNews(index) {
-            const newsData = getNewsData();
-            const news = newsData[index];
+            getNewsData().then(newsData => {
+                const news = newsData[index];
 
-            document.getElementById('newsTitle').value = news.title;
-            document.getElementById('newsContent').value = news.content;
-            document.getElementById('newsImage').value = news.image;
-            document.getElementById('newsId').value = index;
+                document.getElementById('newsTitle').value = news.title;
+                document.getElementById('newsContent').value = news.content;
+                document.getElementById('newsImage').value = news.image;
+                document.getElementById('newsId').value = index;
+            });
         }
 
-        function deleteNews(index) {
-            const newsData = getNewsData();
+        async function deleteNews(index) {
+            const newsData = await getNewsData();
             newsData.splice(index, 1);
-            saveNewsData(newsData);
+            await saveNewsData(newsData);
             displayNews();
         }
 
