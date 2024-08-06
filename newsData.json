@@ -1,0 +1,14 @@
+[
+    {
+        "title": "Berita Pertama",
+        "content": "Ini adalah konten berita pertama.",
+        "image": "https://example.com/image1.jpg",
+        "url": "#"
+    },
+    {
+        "title": "Berita Kedua",
+        "content": "Ini adalah konten berita kedua.",
+        "image": "https://example.com/image2.jpg",
+        "url": "#"
+    }
+]
