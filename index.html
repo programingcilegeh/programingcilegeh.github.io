@@ -137,17 +137,19 @@
     <script>
         // JavaScript
 
-        // Fungsi untuk mendapatkan berita dari LocalStorage
-        function getNewsData() {
-            return JSON.parse(localStorage.getItem('newsData')) || [];
+        // Fungsi untuk mendapatkan berita dari file JSON
+        async function getNewsData() {
+            const response = await fetch('newsData.json');
+            const data = await response.json();
+            return data;
         }
 
         // Fungsi untuk menampilkan berita
-        function displayNews() {
+        async function displayNews() {
             const newsContainer = document.getElementById('newsContainer');
             newsContainer.innerHTML = '';
 
-            const newsData = getNewsData();
+            const newsData = await getNewsData();
             newsData.forEach((news, index) => {
                 const newsArticle = document.createElement('div');
                 newsArticle.classList.add('news-article');
@@ -204,5 +206,4 @@
         window.onload = displayNews;
     </script>
 </body>
-  </html>
-  
+</html>
