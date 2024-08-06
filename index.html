@@ -37,17 +37,19 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 100%;
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             flex: 1;
+            width: 90%;
         }
 
         h1 {
             text-align: center;
+            font-size: 2rem;
         }
 
         .search-container {
@@ -57,6 +59,7 @@
 
         .search-container input {
             width: 80%;
+            max-width: 600px;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -78,6 +81,7 @@
             background-color: #fff;
             cursor: pointer;
             transition: transform 0.2s;
+            flex-wrap: wrap;
         }
 
         .news-article:hover {
@@ -106,6 +110,7 @@
             height: 100px;
             border-radius: 8px;
             overflow: hidden;
+            margin-left: 10px;
         }
 
         .news-image img {
@@ -129,6 +134,24 @@
             text-align: center;
             padding: 10px 0;
             margin-top: auto;
+        }
+
+        @media (max-width: 600px) {
+            .navbar a {
+                float: none;
+                display: block;
+                text-align: left;
+            }
+
+            .news-article {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .news-image {
+                margin-left: 0;
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
