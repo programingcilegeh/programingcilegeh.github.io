@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NW-COMPANY</title>
+    <style>
+        /* CSS */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex: 1;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .news-container {
+            margin-top: 20px;
+        }
+
+        .news-article {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .news-article:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-content {
+            flex: 1;
+            padding-right: 10px;
+        }
+
+        .news-content h2 {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .news-content p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .news-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .news-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .full-content {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html">Home</a>
+        <a href="data_karyawan.html">Data Karyawan</a>
+        <a href="about.html">About</a>
+    </div>
+    <div class="container">
+        <h1>Berita Terbaru</h1>
+        <div class="news-container" id="newsContainer"></div>
+    </div>
+    <footer>
+        <p>© 2024 NW-COMPANY</p>
+        <p><a href="https://silumankatak.github.io" target="_blank" style="color: white;">Official Website</a></p>
+    </footer>
+
+    <script>
+        // JavaScript
+
+        // Fungsi untuk mendapatkan berita dari LocalStorage
+        function getNewsData() {
+            return JSON.parse(localStorage.getItem('newsData')) || [];
+        }
+
+        // Fungsi untuk menampilkan berita
+        function displayNews() {
+            const newsContainer = document.getElementById('newsContainer');
+            newsContainer.innerHTML = '';
+
+            const newsData = getNewsData();
+            newsData.forEach((news, index) => {
+                const newsArticle = document.createElement('div');
+                newsArticle.classList.add('news-article');
+                newsArticle.setAttribute('onclick', `toggleFullContent(${index})`);
+
+                const newsContent = document.createElement('div');
+                newsContent.classList.add('news-content');
+
+                const titleElement = document.createElement('h2');
+                titleElement.textContent = news.title;
+
+                const contentElement = document.createElement('p');
+                contentElement.textContent = news.content;
+
+                newsContent.appendChild(titleElement);
+                newsContent.appendChild(contentElement);
+
+                const newsImage = document.createElement('div');
+                newsImage.classList.add('news-image');
+
+                const imgElement = document.createElement('img');
+                imgElement.src = news.image;
+
+                newsImage.appendChild(imgElement);
+
+                newsArticle.appendChild(newsContent);
+                newsArticle.appendChild(newsImage);
+
+                const fullContent = document.createElement('div');
+                fullContent.classList.add('full-content');
+                fullContent.id = `fullContent${index}`;
+                fullContent.innerHTML = `
+                    <h2>${news.title}</h2>
+                    <img src="${news.image}" alt="${news.title}">
+                    <p>${news.content}</p>
+                `;
+
+                newsContainer.appendChild(newsArticle);
+                newsContainer.appendChild(fullContent);
+            });
+        }
+
+        // Fungsi untuk menampilkan konten penuh
+        function toggleFullContent(index) {
+            const fullContent = document.getElementById(`fullContent${index}`);
+            if (fullContent.style.display === 'none' || fullContent.style.display === '') {
+                fullContent.style.display = 'block';
+            } else {
+                fullContent.style.display = 'none';
+            }
+        }
+
+        // Tampilkan berita saat halaman dimuat
+        window.onload = displayNews;
+    </script>
+</body>
+  </html>
+  
