@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - NW-COMPANY</title>
+    <style>
+        /* CSS */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex: 1;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .news-container {
+            margin-top: 20px;
+        }
+
+        .news-article {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .news-article h2 {
+            font-size: 18px;
+            margin: 0 0 10px;
+        }
+
+        .news-article p {
+            margin: 0 0 10px;
+        }
+
+        .news-article a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        .news-article a:hover {
+            text-decoration: underline;
+        }
+
+        .news-article img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .news-article button {
+            margin-right: 10px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .edit-button {
+            background-color: #FFA500;
+            color: white;
+        }
+
+        .delete-button {
+            background-color: #FF0000;
+            color: white;
+        }
+
+        .add-news-form {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e9e9e9;
+            border-radius: 8px;
+        }
+
+        .add-news-form input, .add-news-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .add-news-form button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-news-form button:hover {
+            background-color: #45a049;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Berita Terbaru</h1>
+        <div class="news-container" id="newsContainer"></div>
+
+        <div class="add-news-form">
+            <h2>Tambah/Edit Berita</h2>
+            <input type="text" id="newsTitle" placeholder="Judul Berita" required>
+            <textarea id="newsContent" rows="4" placeholder="Isi Berita" required></textarea>
+            <input type="text" id="newsImage" placeholder="URL Gambar Banner" required>
+            <input type="hidden" id="newsId">
+            <button onclick="addOrEditNews()">Simpan Berita</button>
+        </div>
+    </div>
+    <footer>
+        © 2024 NW-COMPANY
+    </footer>
+
+    <script>
+        // JavaScript
+
+        // Fungsi untuk mendapatkan berita dari LocalStorage
+        function getNewsData() {
+            return JSON.parse(localStorage.getItem('newsData')) || [];
+        }
+
+        // Fungsi untuk menyimpan berita ke LocalStorage
+        function saveNewsData(newsData) {
+            localStorage.setItem('newsData', JSON.stringify(newsData));
+        }
+
+        function displayNews() {
+            const newsContainer = document.getElementById('newsContainer');
+            newsContainer.innerHTML = '';
+
+            const newsData = getNewsData();
+            newsData.forEach((news, index) => {
+                const newsArticle = document.createElement('div');
+                newsArticle.classList.add('news-article');
+
+                const titleElement = document.createElement('h2');
+                titleElement.textContent = news.title;
+
+                const contentElement = document.createElement('p');
+                contentElement.textContent = news.content;
+
+                const imgElement = document.createElement('img');
+                imgElement.src = news.image;
+
+                const link = document.createElement('a');
+                link.href = news.url;
+                link.target = '_blank';
+                link.textContent = 'Baca selengkapnya';
+
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.classList.add('edit-button');
+                editButton.onclick = () => editNews(index);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Hapus';
+                deleteButton.classList.add('delete-button');
+                deleteButton.onclick = () => deleteNews(index);
+
+                newsArticle.appendChild(imgElement);
+                newsArticle.appendChild(titleElement);
+                newsArticle.appendChild(contentElement);
+                newsArticle.appendChild(link);
+                newsArticle.appendChild(editButton);
+                newsArticle.appendChild(deleteButton);
+
+                newsContainer.appendChild(newsArticle);
+            });
+        }
+
+        function addOrEditNews() {
+            const title = document.getElementById('newsTitle').value;
+            const content = document.getElementById('newsContent').value;
+            const image = document.getElementById('newsImage').value;
+            const newsId = document.getElementById('newsId').value;
+            const url = "#"; // Placeholder URL, bisa diubah sesuai kebutuhan
+
+            if (title && content && image) {
+                const newsData = getNewsData();
+
+                if (newsId) {
+                    // Edit berita yang ada
+                    newsData[newsId] = { title, content, image, url };
+                } else {
+                    // Tambah berita baru
+                    newsData.push({ title, content, image, url });
+                }
+
+                saveNewsData(newsData);
+                displayNews();
+
+                document.getElementById('newsTitle').value = '';
+                document.getElementById('newsContent').value = '';
+                document.getElementById('newsImage').value = '';
+                document.getElementById('newsId').value = '';
+            } else {
+                alert('Harap isi semua kolom!');
+            }
+        }
+
+        function editNews(index) {
+            const newsData = getNewsData();
+            const news = newsData[index];
+
+            document.getElementById('newsTitle').value = news.title;
+            document.getElementById('newsContent').value = news.content;
+            document.getElementById('newsImage').value = news.image;
+            document.getElementById('newsId').value = index;
+        }
+
+        function deleteNews(index) {
+            const newsData = getNewsData();
+            newsData.splice(index, 1);
+            saveNewsData(newsData);
+            displayNews();
+        }
+
+        // Display news on page load
+        window.onload = displayNews;
+    </script>
+</body>
+</html>
