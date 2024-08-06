@@ -50,6 +50,19 @@
             text-align: center;
         }
 
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-container input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
         .news-container {
             margin-top: 20px;
         }
@@ -127,6 +140,9 @@
     </div>
     <div class="container">
         <h1>Berita Terbaru</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" onkeyup="searchNews()" placeholder="Cari berita...">
+        </div>
         <div class="news-container" id="newsContainer"></div>
     </div>
     <footer>
@@ -145,11 +161,10 @@
         }
 
         // Fungsi untuk menampilkan berita
-        async function displayNews() {
+        async function displayNews(newsData) {
             const newsContainer = document.getElementById('newsContainer');
             newsContainer.innerHTML = '';
 
-            const newsData = await getNewsData();
             newsData.forEach((news, index) => {
                 const newsArticle = document.createElement('div');
                 newsArticle.classList.add('news-article');
@@ -202,8 +217,23 @@
             }
         }
 
+        // Fungsi untuk mencari berita
+        async function searchNews() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const newsData = await getNewsData();
+
+            const filteredNews = newsData.filter(news => {
+                return news.title.toLowerCase().includes(searchInput) || news.content.toLowerCase().includes(searchInput);
+            });
+
+            displayNews(filteredNews);
+        }
+
         // Tampilkan berita saat halaman dimuat
-        window.onload = displayNews;
+        window.onload = async () => {
+            const newsData = await getNewsData();
+            displayNews(newsData);
+        };
     </script>
 </body>
 </html>
