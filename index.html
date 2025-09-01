@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Galaxy Landing — Indah & Modern</title>
+  <meta name="description" content="Tampilan awal web bertema galaksi: animasi bintang, nebula, parallax, dan desain glassmorphism. Satu file HTML + CSS + JS." />
+  <style>
+    :root{
+      --bg:#070914;            /* warna dasar langit */
+      --accent:#8ad9ff;        /* biru neon */
+      --accent-2:#b388ff;      /* ungu neon */
+      --text:#eaf4ff;
+      --muted:#a9b6c6;
+      --glass:rgba(255,255,255,.08);
+      --glass-stroke:rgba(255,255,255,.25);
+      --shadow:0 10px 30px rgba(0,0,0,.55), 0 0 40px rgba(93,126,255,.12);
+      --radius:22px;
+    }
+
+    /* Reset & base */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font:16px/1.6 "Inter",ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto; 
+      color:var(--text); background:var(--bg); overflow-x:hidden;
+    }
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+    button{font:inherit}
+
+    /* Background layers */
+    .sky{position:fixed; inset:0; z-index:-3; background:radial-gradient(1200px 700px at 70% -10%, rgba(130,94,255,.35), transparent 60%), radial-gradient(900px 600px at 20% 120%, rgba(0,153,255,.25), transparent 60%), radial-gradient(600px 500px at 80% 80%, rgba(255,86,190,.2), transparent 60%), linear-gradient(180deg, #05060e 0%, #0a0e1f 60%, #0a0b16 100%);
+    }
+
+    /* twinkling starfield (CSS layer) */
+    .twinkle{position:fixed; inset:0; z-index:-2; background:url('data:image/svg+xml;utf8,\
+      <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">\
+        <circle cx="20" cy="30" r="1" fill="white" opacity="0.8"/>\
+        <circle cx="70" cy="80" r="1" fill="white" opacity="0.6"/>\
+        <circle cx="50" cy="50" r="0.8" fill="white" opacity="0.7"/>\
+        <circle cx="90" cy="20" r="0.9" fill="white" opacity="0.6"/>\
+        <circle cx="10" cy="90" r="0.9" fill="white" opacity="0.7"/>\
+      </svg>');
+      animation: twinkle 10s linear infinite; opacity:.7; filter: drop-shadow(0 0 2px rgba(255,255,255,.3));
+    }
+    @keyframes twinkle{from{background-position:0 0} to{background-position:-1000px 1000px}}
+
+    /* Canvas starfield (JS) */
+    #stars{position:fixed; inset:0; z-index:-1; display:block}
+
+    /* shooting stars */
+    .shooting{position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden}
+    .shooting span{position:absolute; width:120px; height:2px; background:linear-gradient(90deg, rgba(255,255,255,.0), rgba(255,255,255,.9), rgba(138,217,255,.0)); filter:drop-shadow(0 0 6px rgba(138,217,255,.7)); border-radius:2px; transform:rotate(12deg); animation:shoot 3.2s ease-in-out infinite;}
+    @keyframes shoot{ 0%{transform:translate3d(-20vw,-10vh,0) rotate(12deg); opacity:0} 10%{opacity:1} 60%{opacity:1} 100%{transform:translate3d(120vw,80vh,0) rotate(12deg); opacity:0}}
+
+    /* Header */
+    header{position:sticky; top:0; z-index:10; backdrop-filter:blur(10px); background:linear-gradient(180deg, rgba(4,7,18,.7), rgba(4,7,18,.25)); border-bottom:1px solid rgba(255,255,255,.07)}
+    .container{max-width:1150px; margin:0 auto; padding:18px 22px; display:flex; align-items:center; justify-content:space-between}
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{width:38px; height:38px; border-radius:12px; background:radial-gradient(circle at 30% 30%, var(--accent), transparent 55%), radial-gradient(circle at 70% 70%, var(--accent-2), transparent 60%), #0e1230; box-shadow:0 0 20px rgba(138,217,255,.35) inset, 0 0 30px rgba(179,136,255,.25) inset}
+    .brand h1{font-size:1.05rem; letter-spacing:.6px; margin:0; font-weight:700}
+    nav a{opacity:.85; margin-left:18px}
+    nav a:hover{opacity:1}
+
+    /* Hero */
+    .hero{min-height:86vh; display:grid; place-items:center; text-align:center; padding:80px 20px 60px}
+    .hero-inner{max-width:900px}
+    .kicker{color:var(--muted); letter-spacing:.25em; text-transform:uppercase; font-size:.8rem}
+    .title{font-size:clamp(2.2rem, 5vw, 4.4rem); line-height:1.05; margin:.4rem 0 1rem; font-weight:800; text-shadow:0 8px 30px rgba(0,0,0,.65)}
+    .gradient-text{background:linear-gradient(90deg,var(--accent),var(--accent-2)); -webkit-background-clip:text; background-clip:text; color:transparent}
+    .subtitle{color:var(--muted); font-size:clamp(1rem,2.2vw,1.2rem); margin:0 auto 28px; max-width:720px}
+
+    .actions{display:flex; gap:14px; justify-content:center; flex-wrap:wrap}
+    .btn{padding:12px 18px; border:1px solid var(--glass-stroke); background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04)); border-radius:14px; box-shadow:var(--shadow); transition:.25s transform, .25s box-shadow, .25s background; color:var(--text)}
+    .btn:hover{transform:translateY(-3px); box-shadow:0 14px 40px rgba(0,0,0,.55), 0 0 60px rgba(138,217,255,.2)}
+    .btn.primary{border-color:transparent; background:linear-gradient(90deg, rgba(138,217,255,.35), rgba(179,136,255,.35));}
+
+    /* Sections */
+    section{padding:70px 20px}
+    .grid{max-width:1150px; margin:0 auto; display:grid; gap:20px}
+    .features{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.12); border-radius:var(--radius); padding:22px; backdrop-filter:blur(8px); box-shadow:var(--shadow)}
+    .card h3{margin:0 0 8px}
+    .card p{margin:0; color:var(--muted)}
+
+    /* CTA strip */
+    .cta{margin:40px auto; max-width:1000px; text-align:center}
+    .cta .wrap{padding:26px; border-radius:var(--radius); border:1px solid rgba(255,255,255,.13); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); box-shadow:var(--shadow)}
+
+    /* Footer */
+    footer{padding:40px 20px 70px; color:var(--muted); text-align:center}
+
+    /* Small helpers */
+    .dot{display:inline-block; width:8px; height:8px; border-radius:999px; background:radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.1)); box-shadow:0 0 14px rgba(138,217,255,.7), 0 0 30px rgba(179,136,255,.4)}
+
+    /* Responsive tweaks */
+    @media (max-width:720px){
+      nav{display:none}
+      .actions{gap:10px}
+    }
+  </style>
+</head>
+<body>
+  <!-- Background -->
+  <div class="sky" aria-hidden="true"></div>
+  <div class="twinkle" aria-hidden="true"></div>
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="shooting" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <h1>Galaxy Landing</h1>
+      </div>
+      <nav>
+        <a href="#fitur">Fitur</a>
+        <a href="#tentang">Tentang</a>
+        <a href="#kontak">Kontak</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main class="hero">
+    <div class="hero-inner">
+      <div class="kicker">Selamat datang di</div>
+      <h2 class="title">Jelajahi <span class="gradient-text">Galaksi</span> yang <span class="gradient-text">Sangat Indah</span></h2>
+      <p class="subtitle">Template awal website satu file dengan animasi bintang, nebula parallax, dan kartu glassmorphism. Cocok untuk landing page game, komunitas, atau produk digital.</p>
+      <div class="actions">
+        <a class="btn primary" href="#fitur">Lihat Fitur</a>
+        <a class="btn" href="#kontak">Mulai Sekarang</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Features -->
+  <section id="fitur">
+    <div class="grid features">
+      <article class="card">
+        <h3>Starfield Dinamis</h3>
+        <p>Kanvas bintang bergerak halus, disesuaikan dengan performa perangkat.</p>
+      </article>
+      <article class="card">
+        <h3>Parallax Nebula</h3>
+        <p>Layer nebula responsif yang bereaksi saat kursor bergerak.</p>
+      </article>
+      <article class="card">
+        <h3>Glassmorphism</h3>
+        <p>Kartu dan tombol transparan lembut dengan bayangan sinematik.</p>
+      </article>
+      <article class="card">
+        <h3>Akses Cepat</h3>
+        <p>Navigasi lengket, tombol CTA, dan struktur yang ramah pengguna.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="tentang">
+    <div class="grid">
+      <div class="card">
+        <h3>Tentang Template</h3>
+        <p>Semua CSS & JavaScript tergabung dalam satu file <strong>index.html</strong>. Anda dapat mengganti warna melalui variabel CSS di bagian <code>:root</code> dan menambah section sesuai kebutuhan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Strip -->
+  <section class="cta" id="kontak">
+    <div class="wrap">
+      <h3>Siap Meluncur? <span class="dot"></span></h3>
+      <p style="margin:.3rem 0 1rem; color:var(--muted)">Gunakan template ini sebagai titik awal proyek Anda. Sederhana, cepat, dan memukau.</p>
+      <div class="actions" style="justify-content:center">
+        <a class="btn primary" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'})">Ke Atas</a>
+        <a class="btn" href="#fitur">Eksplor Fitur</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © <span id="year"></span> Galaxy Landing — Dibuat untuk Anda ✨
+  </footer>
+
+  <script>
+    // Utility: clamp
+    const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+
+    // Canvas Starfield
+    (function(){
+      const canvas=document.getElementById('stars');
+      const ctx=canvas.getContext('2d');
+      let w,h,stars=[],density=window.devicePixelRatio>1?1.1:0.9; // sedikit adaptif
+
+      function resize(){
+        w=canvas.width=window.innerWidth*devicePixelRatio; 
+        h=canvas.height=window.innerHeight*devicePixelRatio;
+        canvas.style.width=window.innerWidth+'px';
+        canvas.style.height=window.innerHeight+'px';
+        spawn();
+      }
+
+      function spawn(){
+        const count=Math.floor((w*h)/22000*density);
+        stars = new Array(count).fill().map(()=>({
+          x:Math.random()*w,
+          y:Math.random()*h,
+          z:Math.random()*0.8+0.2,
+          r:Math.random()*1.2+0.3,
+          vx:(Math.random()-.5)*0.06,
+          vy:(Math.random()-.5)*0.06,
+          tw:Math.random()*Math.PI*2
+        }));
+      }
+
+      function draw(){
+        ctx.clearRect(0,0,w,h);
+        for(const s of stars){
+          s.x+=s.vx; s.y+=s.vy; s.tw+=0.03;
+          if(s.x<0) s.x=w; if(s.x>w) s.x=0; if(s.y<0) s.y=h; if(s.y>h) s.y=0;
+          const alpha = 0.6 + Math.sin(s.tw)*0.4; // berkelap-kelip
+          ctx.beginPath();
+          ctx.arc(s.x,s.y,s.r*s.z,0,Math.PI*2);
+          ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+          ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', resize, {passive:true});
+      resize();
+      draw();
+    })();
+
+    // Shooting stars generator (CSS spans)
+    (function(){
+      const wrap=document.querySelector('.shooting');
+      function spawn(){
+        const s=document.createElement('span');
+        s.style.top = (Math.random()*-10 - 5) + 'vh';
+        s.style.left = (Math.random()*20 - 10) + 'vw';
+        s.style.animationDelay = (Math.random()*3).toFixed(2)+'s';
+        s.style.animationDuration = (2.5 + Math.random()*1.8).toFixed(2)+'s';
+        wrap.appendChild(s);
+        setTimeout(()=>wrap.removeChild(s), 4000);
+      }
+      setInterval(spawn, 1200);
+    })();
+
+    // Parallax by mouse
+    (function(){
+      const sky=document.querySelector('.sky');
+      window.addEventListener('mousemove', e=>{
+        const x=(e.clientX/window.innerWidth - .5);
+        const y=(e.clientY/window.innerHeight - .5);
+        const tx=clamp(x*12,-12,12), ty=clamp(y*12,-12,12);
+        sky.style.transform=`translate3d(${tx}px, ${ty}px, 0)`;
+      }, {passive:true});
+    })();
+
+    // Smooth anchor scroll for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const id=a.getAttribute('href');
+        if(id.length>1){
+          e.preventDefault();
+          document.querySelector(id)?.scrollIntoView({behavior:'smooth'});
+        }
+      });
+    });
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
